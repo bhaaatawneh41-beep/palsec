@@ -37,25 +37,43 @@ async def handle(update, context):
 
 # 5. تشغيل البوت
 if __name__ == '__main__':
-    app = ApplicationBuilder().token(TOKEN).build()
-    
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle))
-    
-    print("البوت يعمل الآن ومستعد لاستقبال الرسائل...")
-    app.run_polling()
-    if __name__ == '__main__':
-    # بناء التطبيق باستخدام التوكين الذي استخرجناه من الإعدادات
+    # تشغيل الخادم الوهمي في الخلفية (ضروري لبقاء البوت على Render)
+   import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+
+# 1. ضع التوكن هنا
+TOKEN = "8342410932:AAEtLjBkZsQRHy2bXGIJhfd4joypY4w7X5o"
+
+# 2. تعريف الدوال
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("أهلاً بك! البوت يعمل بنجاح.")
+
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("لقد وصلتني رسالتك!")
+
+# --- كود الخادم (للحفاظ على عمل البوت) ---
+class SimpleHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is running")
+
+def run_server():
+    server = HTTPServer(('0.0.0.0', 8080), SimpleHandler)
+    server.serve_forever()
+
+threading.Thread(target=run_server, daemon=True).start()
+
+# --- تشغيل البوت ---
+if __name__ == '__main__':
     application = ApplicationBuilder().token(TOKEN).build()
-
-    # إضافة الأوامر (Handlers)
-    start_handler = CommandHandler('start', start)
-    application.add_handler(start_handler)
-
-    # إضافة معالج النصوص
-    msg_handler = MessageHandler(filters.TEXT & (~filters.COMMAND), handle)
-    application.add_handler(msg_handler)
-
-    # تشغيل البوت
+    
+    # إضافة المعالجات
+    application.add_handler(CommandHandler('start', start))
+    # هنا قمنا بتصحيح السطر ليكون 'handle_message' وليس 'msg_handler'
+    application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
+    
     print("Bot is running...")
     application.run_polling()
