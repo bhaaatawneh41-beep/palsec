@@ -20,20 +20,25 @@ async def start(update, context):
     )
 
 # 4. دالة معالجة الأزرار والنصوص (handle)
-async def handle(update, context):
-    user_text = update.message.text
+   async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text.strip() # إزالة المسافات الزائدة
     
-    if user_text == "طلب صيانة 🛠️":
-        await update.message.reply_text("أهلاً بك، تم استلام طلب الصيانة الخاص بك 🛠️. سنقوم بالتواصل معك قريباً.")
+    # --- إضافة للتشخيص ---
+    print(f"DEBUG: Received text: '{text}'") 
+    # هذا السطر سيظهر في Render Logs، سيخبرك بالضبط ما يرسله الزر
     
-    elif user_text == "تركيب كاميرات 📷":
-        await update.message.reply_text("تم اختيار تركيب الكاميرات 📷. أخبرنا بمزيد من التفاصيل أو أرسل صورة العطل.")
-        
-    elif user_text == "الموقع 📍":
-        await update.message.reply_text("موقعنا: الخليل - فلسطين 📍")
-        
+    if text == "🛠️ طلب صيانة":
+        await update.message.reply_text("أهلاً بك، يرجى تزويدنا بتفاصيل المشكلة.")
+    elif text == "📷 تركيب كاميرات":
+        await update.message.reply_text("يسعدنا خدمتك! هل لديك موقع محدد؟")
+    elif text == "🌐 خدمات الشبكات":
+        await update.message.reply_text("نقدم حلول شبكات متكاملة، هل تحتاج لاستشارة؟")
+    elif text == "📍 الموقع":
+        await update.message.reply_text("يمكنك العثور على موقعنا هنا: [رابط موقعك]")
+    elif text == "💰 الأسعار":
+        await update.message.reply_text("يمكنك الاطلاع على قائمة الأسعار في ملف PDF.")
     else:
-        await update.message.reply_text("تم استلام رسالتك: " + user_text)
+        await update.message.reply_text("تم استلام رسالتك: " + text)
 
 # 5. تشغيل البوت
 if __name__ == '__main__':
