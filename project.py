@@ -1,9 +1,8 @@
-from telegram import ReplyKeyboardMarkup, KeyboardButton
+import os
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
-
+from telegram import ReplyKeyboardMarkup, KeyboardButton
 # 1. ضع التوكن الخاص بك هنا
 TOKEN =  os.environ.get("TOKEN")
-
 # 2. تعريف الأزرار
 def get_main_keyboard():
     keyboard = [
@@ -45,3 +44,18 @@ if __name__ == '__main__':
     
     print("البوت يعمل الآن ومستعد لاستقبال الرسائل...")
     app.run_polling()
+    if __name__ == '__main__':
+    # بناء التطبيق باستخدام التوكين الذي استخرجناه من الإعدادات
+    application = ApplicationBuilder().token(TOKEN).build()
+
+    # إضافة الأوامر (Handlers)
+    start_handler = CommandHandler('start', start)
+    application.add_handler(start_handler)
+
+    # إضافة معالج النصوص
+    msg_handler = MessageHandler(filters.TEXT & (~filters.COMMAND), handle)
+    application.add_handler(msg_handler)
+
+    # تشغيل البوت
+    print("Bot is running...")
+    application.run_polling()
