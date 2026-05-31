@@ -3,7 +3,7 @@ from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
 # 1. إعدادات البوت (تأكد من إضافة TOKEN في Render Environment)
-TOKEN = os.environ.get("TOKEN")
+TOKEN = '8342410932:AAEtLjBkZsQRHy2bXGIJhfd4joypY4w7X5o'
 
 # 2. تعريف الأزرار
 def get_main_keyboard():
