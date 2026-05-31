@@ -15,26 +15,31 @@ def get_main_keyboard():
     return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
 # 3. دالة البداية
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("أهلاً بك في PALSEC Support! كيف يمكننا مساعدتك اليوم؟", reply_markup=get_main_keyboard())
-
-# 4. دالة معالجة النصوص (تأكد أنها تبدأ من أول السطر بدون مسافات)
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # 1. استخراج بيانات المستخدم
+    user = update.message.from_user
+    name = user.first_name  # الاسم الأول للمستخدم
+    username = user.username if user.username else "لا يوجد يوزرنيم" # اليوزرنيم إذا كان موجوداً
+    
+    # 2. الحصول على نص الرسالة
     text = update.message.text.strip()
     
+    # 3. صياغة الرد (مع دمج اسم المستخدم)
+    response_header = f"أهلاً {name} (@{username})، "
+    
     if "طلب صيانة" in text:
-        await update.message.reply_text("أهلاً بك، يرجى تزويدنا بتفاصيل المشكلة.")
+        await update.message.reply_text(f"{response_header}يرجى تزويدنا بتفاصيل المشكلة وسنتواصل معك.")
     elif "تركيب كاميرات" in text:
-        await update.message.reply_text("يسعدنا خدمتك! هل لديك موقع محدد؟")
+        await update.message.reply_text(f"{response_header}يسعدنا خدمتك! هل لديك موقع محدد؟")
     elif "خدمات الشبكات" in text:
-        await update.message.reply_text("نقدم حلول شبكات متكاملة، هل تحتاج لاستشارة؟")
+        await update.message.reply_text(f"{response_header}نقدم حلول شبكات متكاملة، هل تحتاج لاستشارة؟")
     elif "الموقع" in text:
-        await update.message.reply_text("يمكنك العثور على موقعنا هنا: [رابط موقعك]")
+        await update.message.reply_text(f"{response_header}يمكنك العثور على موقعنا هنا: [الخليل - بيت كاحل - 0599523164]")
     elif "الأسعار" in text:
-        await update.message.reply_text("يمكنك الاطلاع على قائمة الأسعار في ملف PDF.")
+        await update.message.reply_text(f"{response_header}سوف نتواصل معك لتقديم قائمة الأسعار.")
     else:
-        await update.message.reply_text("تم استلام رسالتك: " + text)
-
+        # إذا كانت رسالة نصية عامة، نكررها مع اسم المستخدم
+        await update.message.reply_text(f"{response_header}تم استلام رسالتك: {text}")
 # 5. تشغيل البوت
 if __name__ == '__main__':
     application = ApplicationBuilder().token(TOKEN).build()
